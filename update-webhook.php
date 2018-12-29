@@ -10,16 +10,18 @@
   }
 
   $name = $data["repository"]["name"];
-  $full_name = $data["repository"]["full_name"];
+  $homepage = $data["repository"]["homepage"];
 
   $dest = "/var/www/html/docs";
-  $archiveSrc = "https://codeload.github.com/$full_name/tar.gz/master";
+  $archiveSrc = "$homepage/-/archive/master/$name-master.tar.gz";
   $tmp = "$dest/master.tar.gz";
+
 
   $check = sh("test -e $dest/$name.repo.test && echo ok || (test -e $dest/*.repo.test && echo no) || echo ok");
   echo $check;
 
   if (strcmp($check, "ok")) {
+    sh("rm -fr $dest && mkdir $dest");
     sh("ls -al $dest");
     sh("curl $archiveSrc --output $tmp");
     sh("ls -al $dest");
@@ -27,6 +29,6 @@
     sh("ls -al $dest");
     sh("touch $dest/$name.repo.test");
   } else {
-    echo "Invalud repository $full_name";
+    echo "Invalud repository $name";
   }
 ?>
